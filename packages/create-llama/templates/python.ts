@@ -7,7 +7,7 @@ import { InstallTemplateArgs, TemplateVectorDB } from "./types";
 
 interface Dependency {
   name: string;
-  version: string;
+  version?: string;
   extras?: string[];
 }
 
@@ -25,7 +25,6 @@ const getAdditionalDependencies = (vectorDb?: TemplateVectorDB) => {
     case "pg": {
       dependencies.push({
         name: "llama-index",
-        version: "^0.9.19",
         extras: ["postgres"],
       });
     }
@@ -53,7 +52,7 @@ const addDependencies = async (
     for (const dependency of dependencies) {
       if (dependency.extras) {
         existingDependencies[dependency.name] = {
-          version: dependency.version,
+          version: existingDependencies[dependency.name],
           extras: dependency.extras,
         };
       } else {
