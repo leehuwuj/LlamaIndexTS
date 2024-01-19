@@ -110,8 +110,9 @@ for (const templateType of templateTypes) {
             request,
           }) => {
             test.skip(appType !== "--no-frontend");
+            const backendPort = appType === "" ? port : externalPort;
             const response = await request.post(
-              `http://localhost:${port}/api/chat`,
+              `http://localhost:${backendPort}/api/chat`,
               {
                 data: {
                   messages: [

@@ -20,7 +20,7 @@ export async function runApp(
 
   let backendCommand = "";
   if (framework === "fastapi") {
-    backendCommand = `poetry run uvicorn main:app --host=0.0.0.0 --port=${externalPort}`;
+    backendCommand = `poetry run uvicorn main:app --host=0.0.0.0 --port=$PORT`;
   } else {
     backendCommand = "npm run dev";
   }
@@ -45,7 +45,11 @@ export async function runApp(
         break;
       default:
         cps.push(
-          await createProcess(backendCommand, path.join(cwd, name), port),
+          await createProcess(
+            backendCommand,
+            path.join(cwd, name),
+            appType === "" ? port : externalPort,
+          ),
         );
         break;
     }
@@ -57,6 +61,7 @@ export async function runApp(
 }
 
 async function createProcess(command: string, cwd: string, port: number) {
+  console.log(`running command '${command}' in ${cwd} port ${port}`);
   const cp = exec(command, {
     cwd,
     env: {
